@@ -104,7 +104,7 @@
    setTimeout(function () {
     var externalIcon = document.getElementById("externalIcon");
     externalIcon.setAttribute("rel", favRel);
-   }, 100);
+   }, 1000);
 		}
 	};
 
