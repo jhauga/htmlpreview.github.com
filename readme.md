@@ -9,7 +9,7 @@ If you try to open raw version of any HTML, CSS or JS file in a web browser dire
 
 In order to use it, just prepend the below fragment to the URL of any HTML file. Copy and paste below: 
 ```markdown
-https://htmlpreview.github.io/?
+https://nobedee.github.io/htmlpreview.github.com/?
 ```
 ## For Example
  - https://htmlpreview.github.io/?https://github.com/twbs/bootstrap/gh-pages/2.3.2/index.html
