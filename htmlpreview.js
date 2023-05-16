@@ -85,12 +85,9 @@
    catch(err) {
     console.log("gitHub favicon");
    }
-   if (hasFavicon == 1) {
-    console.log("FAV worked");    
-   } else {
-    console.log("FAV no");
-    rootFavicon = "https://github.githubassets.com/favicons/favicon.png";
-    favType = "png";
+   if (hasFavicon != 1) {    
+   rootFavicon = "https://github.githubassets.com/favicons/favicon.png";
+   favType = "png";
    }  
    // Add <base> just after <head>, replace <script type="text/javascript"> with <script type="text/htmlpreview">, and add favicon.
 			data = data.replace(/<head([^>]*)>/i, '<head$1><base href="' + url + '"><link id ="externalIcon" rel="external icon" type="image/' + favType + '" href="' + rootFavicon + '">')
