@@ -5,7 +5,7 @@
 	var url = location.search.substring(1).replace(/\/\/github\.com/, '//raw.githubusercontent.com').replace(/\/blob\//, '/'); //Get URL of the raw file
  
 	var replaceAssets = function () {
-		var frame, a, link, links = [], script, scripts = [], i, href, src, root, rootFavicon, favType;
+		var frame, a, link, links = [], script, scripts = [], i, href, src, root, rootFavicon, favType, favRel;
 		//Framesets
 		if (document.querySelectorAll('frameset').length)
 			return; //Don't replace CSS/JS if it's a frameset, because it will be erased by document.write()
@@ -70,9 +70,11 @@
   if (xmlhttp.status == "404") {
    hasFavicon = 0;
    rootFavicon = "";
+   favRel = "alternate external icon";	  
    } else {
    hasFavicon = 1;
    favType = fav;
+   favRel = "external icon";
    }    
   }
  };
@@ -83,14 +85,14 @@
     if (hasFavicon == 0) { checkFavicon("png"); }
    }
    catch(err) {
-    console.log("gitHub favicon");
+    console.log("gitHub favicon");    
    }
    if (hasFavicon != 1) {    
-   rootFavicon = "https://github.githubassets.com/favicons/favicon.png";
-   favType = "png";
+    rootFavicon = "https://github.githubassets.com/favicons/favicon.png";
+    favType = "png";
    }  
    // Add <base> just after <head>, replace <script type="text/javascript"> with <script type="text/htmlpreview">, and add favicon.
-			data = data.replace(/<head([^>]*)>/i, '<head$1><base href="' + url + '"><link id ="externalIcon" rel="external icon" type="image/' + favType + '" href="' + rootFavicon + '">')
+   data = data.replace(/<head([^>]*)>/i, '<head$1><base href="' + url + '"><link id ="externalIcon" rel="external icon" type="image/' + favType + '" href="' + rootFavicon + '">')
     .replace(/<script(\s*src=["'][^"']*["'])?(\s*type=["'](text|application)\/javascript["'])?/gi, '<script type="text/htmlpreview"$1'); 
 			setTimeout(function () {
 				document.open();
@@ -101,7 +103,7 @@
    // Reapply the rel attribute to link with favicon.   
    setTimeout(function () {
     var externalIcon = document.getElementById("externalIcon");
-    externalIcon.setAttribute("rel", "external icon");
+    externalIcon.setAttribute("rel", favRel);
    }, 100);
 		}
 	};
