@@ -70,11 +70,11 @@
   if (xmlhttp.status == "404") {
    hasFavicon = 0;
    rootFavicon = "";
-   favRel = "alternate external icon";	  
+   favRel = "external icon";	  
    } else {
    hasFavicon = 1;
    favType = fav;
-   favRel = "external icon";
+   favRel = "icon";
    }    
   }
  };
