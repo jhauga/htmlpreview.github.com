@@ -3,9 +3,9 @@
 	var previewForm = document.getElementById('previewform');
 
 	var url = location.search.substring(1).replace(/\/\/github\.com/, '//raw.githubusercontent.com').replace(/\/blob\//, '/'); //Get URL of the raw file
-
+ 
 	var replaceAssets = function () {
-		var frame, a, link, links = [], script, scripts = [], i, href, src;
+		var frame, a, link, links = [], script, scripts = [], i, href, src, root, rootFavicon, favType;
 		//Framesets
 		if (document.querySelectorAll('frameset').length)
 			return; //Don't replace CSS/JS if it's a frameset, because it will be erased by document.write()
@@ -58,16 +58,54 @@
 			document.dispatchEvent(new Event('DOMContentLoaded', {bubbles: true, cancelable: true})); //Dispatch DOMContentLoaded event after loading all scripts
 		});
 	};
-
+ var hasFavicon = 0;
+ var checkFavicon = function (fav) {
+ // Replace favicon with github favicon if not found.
+ root = url.replace(url.substr(url.lastIndexOf("/") + 1), "");
+ rootFavicon = root + "favicon." + fav;
+ var xmlhttp = new XMLHttpRequest();
+ xmlhttp.open("HEAD", rootFavicon, false);
+ xmlhttp.send();
+ if (hasFavicon == 0) {
+  if (xmlhttp.status == "404") {
+   hasFavicon = 0;
+   rootFavicon = "";
+   } else {
+   hasFavicon = 1;
+   favType = fav;
+   }    
+  }
+ };
 	var loadHTML = function (data) {
 		if (data) {
-			data = data.replace(/<head([^>]*)>/i, '<head$1><base href="' + url + '">').replace(/<script(\s*src=["'][^"']*["'])?(\s*type=["'](text|application)\/javascript["'])?/gi, '<script type="text/htmlpreview"$1'); //Add <base> just after <head> and replace <script type="text/javascript"> with <script type="text/htmlpreview">
+   try {
+    checkFavicon("ico");
+    if (hasFavicon == 0) { checkFavicon("png"); }
+   }
+   catch(err) {
+    console.log("gitHub favicon");
+   }
+   if (hasFavicon == 1) {
+    console.log("FAV worked");    
+   } else {
+    console.log("FAV no");
+    rootFavicon = "https://github.githubassets.com/favicons/favicon.png";
+    favType = "png";
+   }  
+   // Add <base> just after <head>, replace <script type="text/javascript"> with <script type="text/htmlpreview">, and add favicon.
+			data = data.replace(/<head([^>]*)>/i, '<head$1><base href="' + url + '"><link id ="externalIcon" rel="external icon" type="image/' + favType + '" href="' + rootFavicon + '">')
+    .replace(/<script(\s*src=["'][^"']*["'])?(\s*type=["'](text|application)\/javascript["'])?/gi, '<script type="text/htmlpreview"$1'); 
 			setTimeout(function () {
 				document.open();
-				document.write(data);
+				document.write(data);    
 				document.close();
 				replaceAssets();
 			}, 10); //Delay updating document to have it cleared before
+   // Reapply the rel attribute to link with favicon.   
+   setTimeout(function () {
+    var externalIcon = document.getElementById("externalIcon");
+    externalIcon.setAttribute("rel", "external icon");
+   }, 100);
 		}
 	};
 
