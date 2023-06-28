@@ -9,11 +9,11 @@ If you try to open raw version of any HTML, CSS or JS file in a web browser dire
 
 In order to use it, just prepend the below fragment to the URL of any HTML file. Copy and paste below: 
 ```markdown
-https://nobedee.github.io/htmlpreview.github.com/?
+https://jhauga.github.io/htmlpreview.github.com/?
 ```
 ## For Example
- - https://nobedee.github.io/htmlpreview.github.com/?https://github.com/twbs/bootstrap/gh-pages/2.3.2/index.html
- - https://nobedee.github.io/htmlpreview.github.com/?https://github.com/documentcloud/backbone/blob/master/examples/todos/index.html
+ - https://jhauga.github.io/htmlpreview.github.com/?https://github.com/twbs/bootstrap/gh-pages/2.3.2/index.html
+ - https://jhauga.github.io/htmlpreview.github.com/?https://github.com/documentcloud/backbone/blob/master/examples/todos/index.html
 
 What it does is: load HTML using CORS proxy, then process all links, frames, scripts and styles, and load each of them using CORS proxy, so they can be evaluated by the browser.
 
