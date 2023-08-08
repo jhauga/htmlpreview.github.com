@@ -11,6 +11,13 @@ In order to use it, just prepend the below fragment to the URL of any HTML file.
 ```markdown
 https://jhauga.github.io/htmlpreview.github.com/?
 ```
+
+### Additional Note
+When linking to script files in repo, cdn.jsdelivr can be used. The syntax for the cdn link is:
+```
+https://cdn.jsdelivr.net/gh/[user|org]/[repo]/[file]
+```
+
 ## For Example
  - https://jhauga.github.io/htmlpreview.github.com/?https://github.com/twbs/bootstrap/gh-pages/2.3.2/index.html
  - https://jhauga.github.io/htmlpreview.github.com/?https://github.com/documentcloud/backbone/blob/master/examples/todos/index.html
