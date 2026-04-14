@@ -2,7 +2,10 @@
 
 `Ctrl + click` [Preview Tool](https://jhauga.github.io/htmlpreview.github.com/)
 
-This clone allows for content delivery (i.e. `<script src="https://cdn.example.com/script.js">`) usage.
+This clone mainly allows for:
+
+- Content delivery (i.e. `<script src="https://cdn.example.com/script.js">`) usage
+- Module useage
 
 ## Original Source - GitHub & BitBucket HTML Preview
 
