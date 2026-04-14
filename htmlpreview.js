@@ -44,17 +44,18 @@
 		script = document.querySelectorAll('script[type="text/htmlpreview"]');
 		for (i = 0; i < script.length; ++i) {
 			src = script[i].src; //Get absolute URL
+			var isModule = script[i].hasAttribute('module');
 			if (src.indexOf('//raw.githubusercontent.com') > 0 || src.indexOf('//bitbucket.org') > 0 ||
        src.indexOf('//cdn') > 0) {          //Check if it's from a cdn, raw.github.com or bitbucket.org
-				scripts.push(fetchProxy(src, null, 0)); //Then add it to scripts queue and fetch using CORS proxy
+				scripts.push({content: fetchProxy(src, null, 0), isModule: isModule}); //Then add it to scripts queue and fetch using CORS proxy
 			} else {
 				script[i].removeAttribute('type');
-				scripts.push(script[i].innerHTML); //Add inline script to queue to eval in order
+				scripts.push({content: script[i].textContent, isModule: isModule}); //Add inline script to queue to eval in order
 			}
 		}
-		Promise.all(scripts).then(function (res) {
+		Promise.all(scripts.map(function(s) { return s.content; })).then(function (res) {
 			for (i = 0; i < res.length; ++i) {
-				loadJS(res[i]);
+				loadJS(res[i], scripts[i].isModule);
 			}
 			document.dispatchEvent(new Event('DOMContentLoaded', {bubbles: true, cancelable: true})); //Dispatch DOMContentLoaded event after loading all scripts
 		});
@@ -94,6 +95,11 @@
    }  
    // Add <base> just after <head>, replace <script type="text/javascript"> with <script type="text/htmlpreview">, and add favicon.
    data = data.replace(/<head([^>]*)>/i, '<head$1><base href="' + url + '"><link id ="externalIcon" rel="external icon" type="image/' + favType + '" href="' + rootFavicon + '">')
+    .replace(/<script(\s*src=["'][^"']*["'])?(\s*type=["']module["'])?/gi, function(match, src, type) {
+		var result = '<script type="text/htmlpreview"' + (src || '');
+		if (type) result += ' module';
+		return result;
+	})
     .replace(/<script(\s*src=["'][^"']*["'])?(\s*type=["'](text|application)\/javascript["'])?/gi, '<script type="text/htmlpreview"$1'); 
 			setTimeout(function () {
 				document.open();
@@ -117,10 +123,13 @@
 		}
 	};
 
-	var loadJS = function (data) {
+	var loadJS = function (data, isModule) {
 		if (data) {
 			var script = document.createElement('script');
-			script.innerHTML = data;
+			if (isModule) {
+				script.type = 'module';
+			}
+			script.textContent = data;
 			document.body.appendChild(script);
 		}
 	};
