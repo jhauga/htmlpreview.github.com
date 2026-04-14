@@ -45,20 +45,25 @@
 		for (i = 0; i < script.length; ++i) {
 			src = script[i].src; //Get absolute URL
 			var isModule = script[i].hasAttribute('module');
-			if (src.indexOf('//raw.githubusercontent.com') > 0 || src.indexOf('//bitbucket.org') > 0 ||
-       src.indexOf('//cdn') > 0) {          //Check if it's from a cdn, raw.github.com or bitbucket.org
-				scripts.push({content: fetchProxy(src, null, 0), isModule: isModule}); //Then add it to scripts queue and fetch using CORS proxy
+			if (src) {
+				// External scripts - keep as external <script> tags with src attribute
+				loadExternalJS(src, isModule);
 			} else {
+				// Inline scripts only
 				script[i].removeAttribute('type');
 				scripts.push({content: script[i].textContent, isModule: isModule}); //Add inline script to queue to eval in order
 			}
 		}
-		Promise.all(scripts.map(function(s) { return s.content; })).then(function (res) {
-			for (i = 0; i < res.length; ++i) {
-				loadJS(res[i], scripts[i].isModule);
-			}
-			document.dispatchEvent(new Event('DOMContentLoaded', {bubbles: true, cancelable: true})); //Dispatch DOMContentLoaded event after loading all scripts
-		});
+		if (scripts.length > 0) {
+			Promise.all(scripts.map(function(s) { return s.content; })).then(function (res) {
+				for (i = 0; i < res.length; ++i) {
+					loadJS(res[i], scripts[i].isModule);
+				}
+				document.dispatchEvent(new Event('DOMContentLoaded', {bubbles: true, cancelable: true})); //Dispatch DOMContentLoaded event after loading all scripts
+			});
+		} else {
+			document.dispatchEvent(new Event('DOMContentLoaded', {bubbles: true, cancelable: true})); //Dispatch DOMContentLoaded event even if no inline scripts
+		}
 	};
  var hasFavicon = 0;
  var checkFavicon = function (fav) {
@@ -130,6 +135,17 @@
 				script.type = 'module';
 			}
 			script.textContent = data;
+			document.body.appendChild(script);
+		}
+	};
+
+	var loadExternalJS = function (src, isModule) {
+		if (src) {
+			var script = document.createElement('script');
+			script.src = src;
+			if (isModule) {
+				script.type = 'module';
+			}
 			document.body.appendChild(script);
 		}
 	};
