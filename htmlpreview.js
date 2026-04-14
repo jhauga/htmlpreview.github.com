@@ -99,13 +99,10 @@
     favType = "png";
    }  
    // Add <base> just after <head>, replace <script type="text/javascript"> with <script type="text/htmlpreview">, and add favicon.
+   // DO NOT touch importmaps or inline module scripts - they must remain as-is
    data = data.replace(/<head([^>]*)>/i, '<head$1><base href="' + url + '"><link id ="externalIcon" rel="external icon" type="image/' + favType + '" href="' + rootFavicon + '">')
-    .replace(/<script(\s*src=["'][^"']*["'])?(\s*type=["']module["'])?/gi, function(match, src, type) {
-		var result = '<script type="text/htmlpreview"' + (src || '');
-		if (type) result += ' module';
-		return result;
-	})
-    .replace(/<script(\s*src=["'][^"']*["'])?(\s*type=["'](text|application)\/javascript["'])?/gi, '<script type="text/htmlpreview"$1'); 
+    .replace(/<script(\s+[^>]*?)?\s*type=["'](text|application)\/javascript["']([^>]*?)>/gi, '<script$1$3 type="text/htmlpreview">')
+    .replace(/<script(?!\s+type=)(\s+[^>]*?)?\s*>/gi, '<script type="text/htmlpreview"$1>'); 
 			setTimeout(function () {
 				document.open();
 				document.write(data);    
